@@ -1,0 +1,288 @@
+package hospitalmanagement;
+
+import java.sql.*;
+import java.util.Scanner;
+
+public class HospitalManagement{
+
+    static final String URL = "jdbc:mysql://localhost:3306/HospitalManagement";
+    static final String USER = "root";
+    static final String PASSWORD = "test@123";   // Change to your MySQL password
+
+    static Scanner sc = new Scanner(System.in);
+
+    public static Connection getConnection() {
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            return DriverManager.getConnection(URL, USER, PASSWORD);
+        } catch (Exception e) {
+            System.out.println("Connection Error: " + e.getMessage());
+            return null;
+        }
+    }
+
+    public static void main(String[] args) {
+
+        while (true) {
+
+            System.out.println("\n==================================");
+            System.out.println(" HOSPITAL MANAGEMENT SYSTEM ");
+            System.out.println("==================================");
+
+            System.out.println("1. Add Patient");
+            System.out.println("2. View Patients");
+            System.out.println("3. Add Doctor");
+            System.out.println("4. View Doctors");
+            System.out.println("5. Add Department");
+            System.out.println("6. View Departments");
+            System.out.println("7. Book Appointment");
+            System.out.println("8. View Appointments");
+            System.out.println("9. Admit Patient");
+            System.out.println("10. View Admissions");
+            System.out.println("11. Add Prescription");
+            System.out.println("12. View Prescriptions");
+            System.out.println("13. Generate Bill");
+            System.out.println("14. View Bills");
+            System.out.println("15. Make Payment");
+            System.out.println("16. Exit");
+
+            System.out.print("\nEnter Choice : ");
+            int choice = sc.nextInt();
+            sc.nextLine();
+
+            switch (choice) {
+
+                case 1:
+                    addPatient();
+                    break;
+
+                case 2:
+                    viewPatients();
+                    break;
+
+                case 5:
+                    addDepartment();
+                    break;
+
+                case 6:
+                    viewDepartments();
+                    break;
+
+                case 16:
+                    System.out.println("Thank You");
+                    System.exit(0);
+
+               
+            }
+        }
+    }
+
+    // ==========================
+    // ADD PATIENT
+    // ==========================
+
+    static void addPatient() {
+
+        try {
+
+            Connection con = getConnection();
+
+            System.out.print("Patient Name : ");
+            String name = sc.nextLine();
+
+            System.out.print("Age : ");
+            int age = sc.nextInt();
+            sc.nextLine();
+
+            System.out.print("Gender : ");
+            String gender = sc.nextLine();
+
+            System.out.print("Phone : ");
+            String phone = sc.nextLine();
+
+            System.out.print("Email : ");
+            String email = sc.nextLine();
+
+            System.out.print("Address : ");
+            String address = sc.nextLine();
+
+            System.out.print("Blood Group : ");
+            String blood = sc.nextLine();
+
+            String sql = "INSERT INTO Patient(Name,Age,Gender,Phone,Email,Address,BloodGroup) VALUES(?,?,?,?,?,?,?)";
+
+            PreparedStatement ps = con.prepareStatement(sql);
+
+            ps.setString(1, name);
+            ps.setInt(2, age);
+            ps.setString(3, gender);
+            ps.setString(4, phone);
+            ps.setString(5, email);
+            ps.setString(6, address);
+            ps.setString(7, blood);
+
+            ps.executeUpdate();
+
+            System.out.println("Patient Added Successfully.");
+
+            con.close();
+
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+
+    }
+
+    // ==========================
+    // VIEW PATIENTS
+    // ==========================
+
+    static void viewPatients() {
+
+        try {
+
+            Connection con = getConnection();
+
+            Statement st = con.createStatement();
+
+            ResultSet rs = st.executeQuery("SELECT * FROM Patient");
+
+            System.out.println("\n-----------------------------------------------------------");
+
+            while (rs.next()) {
+
+                System.out.println("ID : " + rs.getInt("PatientID"));
+                System.out.println("Name : " + rs.getString("Name"));
+                System.out.println("Age : " + rs.getInt("Age"));
+                System.out.println("Gender : " + rs.getString("Gender"));
+                System.out.println("Phone : " + rs.getString("Phone"));
+                System.out.println("Email : " + rs.getString("Email"));
+                System.out.println("Address : " + rs.getString("Address"));
+                System.out.println("Blood Group : " + rs.getString("BloodGroup"));
+
+                System.out.println("-------------------------------------");
+
+            }
+
+            con.close();
+
+        } catch (Exception e) {
+
+            System.out.println(e);
+
+        }
+
+    }
+
+    // ==========================
+    // ADD DEPARTMENT
+    // ==========================
+
+    static void addDepartment() {
+
+        try {
+
+            Connection con = getConnection();
+
+            System.out.print("Department Name : ");
+            String name = sc.nextLine();
+
+            System.out.print("Location : ");
+            String location = sc.nextLine();
+
+            String sql = "INSERT INTO Department(DepartmentName,Location) VALUES(?,?)";
+
+            PreparedStatement ps = con.prepareStatement(sql);
+
+            ps.setString(1, name);
+            ps.setString(2, location);
+
+            ps.executeUpdate();
+
+            System.out.println("Department Added Successfully.");
+
+            con.close();
+
+        } catch (Exception e) {
+
+            System.out.println(e);
+
+        }
+
+    }
+
+    // ==========================
+    // VIEW DEPARTMENT
+    // ==========================
+
+    static void viewDepartments() {
+
+        try {
+
+            Connection con = getConnection();
+
+            Statement st = con.createStatement();
+
+            ResultSet rs = st.executeQuery("SELECT * FROM Department");
+
+            while (rs.next()) {
+
+                System.out.println("Department ID : " + rs.getInt("DepartmentID"));
+                System.out.println("Department : " + rs.getString("DepartmentName"));
+                System.out.println("Location : " + rs.getString("Location"));
+
+                System.out.println("--------------------------------");
+
+            }
+
+            con.close();
+
+        }
+        static void addDoctor() {
+
+    try {
+
+        Connection con = getConnection();
+
+        System.out.print("Doctor Name : ");
+        String name = sc.nextLine();
+
+        System.out.print("Specialization : ");
+        String specialization = sc.nextLine();
+
+        System.out.print("Phone : ");
+        String phone = sc.nextLine();
+
+        System.out.print("Email : ");
+        String email = sc.nextLine();
+
+        System.out.print("Department ID : ");
+        int department = sc.nextInt();
+        sc.nextLine();
+
+        String sql = "INSERT INTO Doctor(Name,Specialization,Phone,Email,DepartmentID) VALUES(?,?,?,?,?)";
+
+        PreparedStatement ps = con.prepareStatement(sql);
+
+        ps.setString(1, name);
+        ps.setString(2, specialization);
+        ps.setString(3, phone);
+        ps.setString(4, email);
+        ps.setInt(5, department);
+
+        ps.executeUpdate();
+
+        System.out.println("Doctor Added Successfully.");
+
+        con.close();
+
+    } catch (Exception e) {
+        System.out.println(e);
+    }
+
+}
+
+}
+
+   
+
